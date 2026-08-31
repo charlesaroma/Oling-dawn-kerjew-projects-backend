@@ -1,0 +1,38 @@
+{
+  "name": "oling-dawn-kerjew-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Oling Dawn Kerjew Projects",
+  "main": "src/server.js",
+  "type": "module",
+  "scripts": {
+    "postinstall": "prisma generate",
+    "build": "prisma generate",
+    "start": "node src/server.js",
+    "dev": "nodemon src/server.js",
+    "seed": "node prisma/seed.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "prisma": {
+    "seed": "node prisma/seed.js"
+  },
+  "dependencies": {
+    "@imagekit/nodejs": "^7.10.0",
+    "@prisma/client": "^6.19.3",
+    "bcrypt": "^6.0.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.6",
+    "dotenv": "^17.4.2",
+    "express": "^5.2.1",
+    "express-rate-limit": "^8.6.0",
+    "helmet": "^8.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "multer": "^2.2.0",
+    "zod": "^4.4.3"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.14",
+    "prisma": "^6.19.3"
+  }
+}

@@ -1,0 +1,185 @@
+import crypto from 'node:crypto';
+import ImageKit from '@imagekit/nodejs';
+import prisma from '../../lib/prisma.js';
+import { writeAuditLog } from '../../core/audit/auditLog.controller.js';
+import { env } from '../../config/env.js';
+
+const imagekit = new ImageKit({
+  publicKey: env.IMAGEKIT_PUBLIC_KEY,
+  privateKey: env.IMAGEKIT_PRIVATE_KEY,
+  urlEndpoint: env.IMAGEKIT_URL_ENDPOINT,
+});
+
+const FOLDER = '/oling-dawn-kerjew-projects/media';
+const IMAGEKIT_MAX_BYTES = 25 * 1024 * 1024;
+
+const ALLOWED_MEDIA_FIELDS = ['tag', 'alt'];
+
+function pickMediaFields(body) {
+  const data = {};
+  for (const key of ALLOWED_MEDIA_FIELDS) {
+    if (body[key] !== undefined) data[key] = key === 'tag' ? String(body[key]).toLowerCase() : body[key];
+  }
+  return data;
+}
+
+export const getMedia = async (req, res) => {
+  const { tag } = req.query;
+  const where = tag ? { tag: { equals: tag, mode: 'insensitive' } } : {};
+  const items = await prisma.media.findMany({ where, orderBy: { createdAt: 'desc' } });
+  res.json(items);
+};
+
+export const getMediaItem = async (req, res) => {
+  const item = await prisma.media.findUnique({ where: { id: req.params.id } });
+  if (!item) return res.status(404).json({ message: 'Media not found' });
+  res.json(item);
+};
+
+export const getAuthParams = (req, res) => {
+  const token = crypto.randomUUID();
+  const expire = Math.floor(Date.now() / 1000) + 1800;
+  const signature = crypto
+    .createHmac('sha1', env.IMAGEKIT_PRIVATE_KEY)
+    .update(token + expire)
+    .digest('hex');
+
+  res.json({
+    token,
+    expire,
+    signature,
+    publicKey: env.IMAGEKIT_PUBLIC_KEY,
+    urlEndpoint: env.IMAGEKIT_URL_ENDPOINT,
+  });
+};
+
+// Multipart path — server uploads to ImageKit directly. Kept for parity with the
+// reference backend; the dashboard's own upload flow uses /auth + /record instead
+// (client-direct upload), same as the reference frontend.
+export const createMedia = async (req, res) => {
+  const files = req.files;
+  if (!files || files.length === 0) {
+    return res.status(400).json({ message: 'No files provided' });
+  }
+
+  const tag = (req.body.tag || 'gallery').toLowerCase();
+  const uploaded = [];
+  const oversized = [];
+
+  for (const file of files) {
+    if (file.size > IMAGEKIT_MAX_BYTES) {
+      oversized.push(`${file.originalname}: ${(file.size / 1024 / 1024).toFixed(0)}MB exceeds the 25MB limit`);
+      continue;
+    }
+
+    try {
+      const uploadedFile = await imagekit.files.upload({
+        file: file.buffer,
+        fileName: file.originalname,
+        folder: FOLDER,
+        useUniqueFileName: true,
+      });
+
+      const item = await prisma.media.create({
+        data: {
+          url: uploadedFile.url,
+          fileId: uploadedFile.fileId,
+          tag,
+          size: `${(file.size / 1024).toFixed(0)} KB`,
+          alt: file.originalname.replace(/\.[^/.]+$/, ''),
+        },
+      });
+
+      uploaded.push(item);
+    } catch (err) {
+      oversized.push(`${file.originalname}: ${err.message}`);
+    }
+  }
+
+  await writeAuditLog({
+    action: 'Media Upload',
+    entityType: 'Media',
+    entityId: uploaded.map((i) => i.id).join(','),
+    actorId: req.userId,
+    changes: { urls: uploaded.map((i) => i.url), tag },
+    req,
+  });
+
+  const result = uploaded.length === 1 ? uploaded[0] : uploaded;
+
+  if (oversized.length > 0) {
+    return res.status(207).json({ uploaded: result, errors: oversized });
+  }
+
+  res.status(201).json(result);
+};
+
+export const recordMedia = async (req, res) => {
+  const { fileId, url, name, tag, size } = req.body;
+  if (!url) {
+    return res.status(400).json({ message: 'url is required' });
+  }
+
+  const item = await prisma.media.create({
+    data: {
+      url,
+      fileId: fileId || '',
+      tag: (tag || 'gallery').toLowerCase(),
+      size: size ? `${(parseInt(size, 10) / 1024).toFixed(0)} KB` : '',
+      alt: (name || '').replace(/\.[^/.]+$/, ''),
+    },
+  });
+
+  await writeAuditLog({
+    action: 'Media Upload',
+    entityType: 'Media',
+    entityId: item.id,
+    actorId: req.userId,
+    changes: { url: item.url, tag: item.tag },
+    req,
+  });
+
+  res.status(201).json(item);
+};
+
+export const updateMedia = async (req, res) => {
+  const data = pickMediaFields(req.body);
+  const item = await prisma.media.update({ where: { id: req.params.id }, data });
+
+  await writeAuditLog({
+    action: 'Media Updated',
+    entityType: 'Media',
+    entityId: req.params.id,
+    actorId: req.userId,
+    changes: req.body,
+    req,
+  });
+
+  res.json(item);
+};
+
+export const deleteMedia = async (req, res) => {
+  const item = await prisma.media.findUnique({ where: { id: req.params.id } });
+  if (!item) return res.json({ message: 'Media already deleted' });
+  await prisma.media.delete({ where: { id: req.params.id } });
+
+  if (item.fileId) {
+    try {
+      await imagekit.files.delete(item.fileId);
+    } catch (err) {
+      console.error('Failed to delete file from ImageKit:', err.message);
+    }
+  }
+
+  await writeAuditLog({
+    action: 'Media Deleted',
+    entityType: 'Media',
+    entityId: req.params.id,
+    actorId: req.userId,
+    changes: { url: item.url },
+    severity: 'Warning',
+    req,
+  });
+
+  res.json({ message: 'Media deleted' });
+};

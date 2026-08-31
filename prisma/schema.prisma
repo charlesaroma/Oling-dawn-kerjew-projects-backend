@@ -1,0 +1,162 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mongodb"
+  url      = env("MONGO_URI")
+}
+
+model User {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  name          String
+  email         String    @unique
+  passwordHash  String
+  role          String    @default("admin")
+  isActive      Boolean   @default(true)
+  lastLogin     DateTime?
+  lastLogoutAll DateTime?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  auditLogs AuditLog[]
+
+  @@map("users")
+}
+
+model Profile {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  fullName          String
+  category          String
+  gender            String
+  age               Int?
+  phone             String?
+  location          String?
+  nin               String?
+  passportNumber    String?
+  associatedProject String?
+  photo             String?
+  notes             String?
+  registeredDate    DateTime @default(now())
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@index([category, gender])
+  @@map("profiles")
+}
+
+model Project {
+  id            String   @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String   @unique
+  category      String
+  location      String?
+  status        String   @default("Ongoing")
+  publishStatus String   @default("draft")
+  year          Int
+  summary       String?
+  description   String[]
+  coverImage    String?
+  gallery       String[]
+  video         String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([publishStatus, year])
+  @@map("projects")
+}
+
+model BlogPost {
+  id            String    @id @default(auto()) @map("_id") @db.ObjectId
+  title         String
+  slug          String    @unique
+  excerpt       String?
+  coverImage    String?
+  author        String?
+  publishedAt   DateTime?
+  publishStatus String    @default("draft")
+  tags          String[]
+  content       String[]
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  @@index([publishStatus, publishedAt])
+  @@map("blog_posts")
+}
+
+model TeamMember {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  name      String
+  role      String?
+  photo     String?
+  bio       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("team_members")
+}
+
+// Singleton — one row, no separate :id in the routes. See siteConfig.controller.js.
+model SiteConfig {
+  id                String   @id @default(auto()) @map("_id") @db.ObjectId
+  orgName           String
+  shortName         String?
+  tagline           String?
+  description       String?
+  emails            String[]
+  phones            String[]
+  registeredAddress String?
+  postalAddress     String?
+  registeredYear    String?
+  navLinks          Json     @default("[]")
+  socialLinks       Json     @default("[]")
+  updatedAt         DateTime @updatedAt
+
+  @@map("site_config")
+}
+
+model Media {
+  id        String   @id @default(auto()) @map("_id") @db.ObjectId
+  url       String
+  fileId    String   @unique
+  tag       String?
+  size      String?
+  alt       String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([tag, createdAt])
+  @@map("media")
+}
+
+model ImageCategory {
+  id          String   @id @default(auto()) @map("_id") @db.ObjectId
+  name        String   @unique
+  description String?
+  sortOrder   Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@map("image_categories")
+}
+
+model AuditLog {
+  id         String   @id @default(auto()) @map("_id") @db.ObjectId
+  action     String
+  entityType String
+  entityId   String?
+  actorId    String?  @db.ObjectId
+  actorName  String?
+  changes    Json?
+  severity   String   @default("Info")
+  ipAddress  String?
+  userAgent  String?
+  createdAt  DateTime @default(now())
+
+  actor User? @relation(fields: [actorId], references: [id])
+
+  @@index([entityType, entityId])
+  @@index([actorId, createdAt])
+  @@map("audit_logs")
+}
