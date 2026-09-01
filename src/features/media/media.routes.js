@@ -9,8 +9,11 @@ const upload = multer({ storage: multer.memoryStorage(), limits: { fileSize: 50 
 
 const router = Router();
 
-router.use(requireAuth);
+// Public — the marketing site's Gallery page reads the media library
+// directly, unauthenticated, same as Project/BlogPost/TeamMember GETs.
 router.get('/', getMedia);
+
+router.use(requireAuth);
 router.get('/auth', getAuthParams);
 router.post('/record', recordMedia);
 router.get('/:id', getMediaItem);
