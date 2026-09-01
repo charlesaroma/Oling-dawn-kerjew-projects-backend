@@ -71,8 +71,86 @@ async function seedSiteConfig() {
 // real ones from the ImageKit library, matched to projects using that site's
 // own captions. Anything without a photograph stays a draft.
 const IK = 'https://ik.imagekit.io/u8h0uidte';
+// Construction imagery is served from the site's own public folder, not ImageKit.
+const IK_BUILD = `${IK}/oling-dawn-kerjew-projects/construction`;
 
 const PROJECTS = [
+  /*
+    The low-cost construction programme. ODKHC's own briefing lists its
+    completed interventions (school, mill, hairdressing, scholastic materials,
+    Afghan meeting, gardening tools) — construction is not among them, and the
+    briefing states plainly that "what is missing is the capital". These are
+    therefore seeded as Planned, not Completed. The photographs illustrate the
+    modular system delivered by the building partner, not finished ODKHC sites.
+  */
+  {
+    slug: 'refugee-resettlement-housing',
+    title: 'Refugee & Resettlement Housing',
+    category: 'Low-Cost Construction',
+    location: 'Kampala Metropolitan & Northern Uganda',
+    status: 'Planned',
+    year: 2026,
+    summary: 'Prefabricated modular concrete homes for displaced households, built at non-profit cost so families stop paying rent that accumulates into nothing. Seeking co-financing.',
+    description: [
+      'A refugee family renting a modest room in Kampala pays roughly UGX 700,000 a month. Over five years that is UGX 42 million — enough to own a low-cost housing unit outright, with nothing to show for it at the end.',
+      'Rather than subsidising rent indefinitely, this programme builds the asset itself: reinforced concrete modules cast under factory control, transported to site and craned into position on prepared foundations.',
+      'The programme is at proposal stage and is seeking co-financing partners able to fund construction at district scale.',
+    ],
+    coverImage: `${IK_BUILD}/solution-unit.jpg`,
+    gallery: [],
+    publishStatus: 'published',
+  },
+  {
+    slug: 'health-centres-and-clinics',
+    title: 'Health Centres and Clinics',
+    category: 'Low-Cost Construction',
+    location: 'Northern Uganda & Kampala',
+    status: 'Planned',
+    year: 2026,
+    summary: 'Modular health facilities placed close enough to reach on foot, for households who currently navigate hospitals alone and without income. Seeking co-financing.',
+    description: [
+      'Urban refugee households report that care which is free on paper still costs money in practice, and that chronic conditions become emergencies before they are treated.',
+      'The same modular system that produces housing produces clinics and treatment rooms — cast off site, assembled quickly, and durable enough to serve for decades rather than a season.',
+      'The programme is at proposal stage and is seeking co-financing partners.',
+    ],
+    coverImage: `${IK_BUILD}/build-04-finish.jpg`,
+    gallery: [],
+    publishStatus: 'published',
+  },
+  {
+    slug: 'schools-and-teaching-blocks',
+    title: 'Schools and Teaching Blocks',
+    category: 'Low-Cost Construction',
+    location: 'Oyam, Lira & Lango Sub-Region',
+    status: 'Planned',
+    year: 2026,
+    summary: 'Classrooms, teaching blocks and dormitories built from repeatable modules — replacing damaged roofing and inadequate sanitation at underfunded schools. Seeking co-financing.',
+    description: [
+      'Visits to schools in Kamdini Sub County surfaced damaged roofing, inadequate toilets and buildings that will not survive many more rainy seasons.',
+      'Modular construction answers this directly: one mould produces two one-room units, four produce an 80m² block, and storeys stack where density is needed.',
+      'The programme is at proposal stage and is seeking co-financing partners.',
+    ],
+    coverImage: `${IK_BUILD}/modular-storeys.jpg`,
+    gallery: [`${IK_BUILD}/modular-row.jpg`],
+    publishStatus: 'published',
+  },
+  {
+    slug: 'roads-bridges-drainage',
+    title: 'Roads, Bridges, Drainage and Culverts',
+    category: 'Low-Cost Construction',
+    location: 'Northern Uganda',
+    status: 'Planned',
+    year: 2026,
+    summary: 'Access infrastructure that keeps produce and patients moving year-round, and stops communities being cut off in the wet season. Seeking co-financing.',
+    description: [
+      'Access is the constraint behind much of the rest of the work: a mill is only useful if produce can reach it, and a clinic only useful if patients can.',
+      'The programme covers roads, bridges, drainage and box culverts, using the same precast approach our building partner has already delivered on national infrastructure contracts.',
+      'The programme is at proposal stage and is seeking co-financing partners.',
+    ],
+    coverImage: `${IK_BUILD}/namanve-bridges.jpg`,
+    gallery: [],
+    publishStatus: 'published',
+  },
   {
     slug: 'farming-tools-distribution',
     title: 'Farming Tools for Anywalonino Women',
