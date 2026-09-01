@@ -7,18 +7,23 @@ const prisma = new PrismaClient();
 const DEFAULT_IMAGE_CATEGORIES = ['profiles', 'projects', 'blog', 'team', 'gallery'];
 
 async function seedAdmin() {
-  const passwordHash = await bcrypt.hash('odkhc-admin-2026', 12);
+  const email = 'charlesaroma9@gmail.com';
+  const passwordHash = await bcrypt.hash('Dev@2026!', 12);
+
+  // Remove the old demo admin left over from earlier development.
+  await prisma.user.deleteMany({ where: { email: 'admin@odkhc.local' } });
+
   await prisma.user.upsert({
-    where: { email: 'admin@odkhc.local' },
+    where: { email },
     update: {},
     create: {
-      name: 'Oling Dawn Kerjew Projects Admin',
-      email: 'admin@odkhc.local',
+      name: 'Charles Aroma',
+      email,
       passwordHash,
-      role: 'admin',
+      role: 'Software Developer',
     },
   });
-  console.log('Seeded admin user: admin@odkhc.local');
+  console.log(`Seeded admin user: ${email}`);
 }
 
 async function seedSiteConfig() {

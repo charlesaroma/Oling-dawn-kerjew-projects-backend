@@ -1,3 +1,6 @@
+import { readFileSync } from 'node:fs';
+import { join, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -16,6 +19,12 @@ import mediaRoutes from './features/media/media.routes.js';
 import imageCategoryRoutes from './features/imageCategories/imageCategory.routes.js';
 import auditLogRoutes from './core/audit/auditLog.routes.js';
 
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+const statusHtml = readFileSync(join(__dirname, 'views', 'status.html'), 'utf-8')
+  .replace('__ENVIRONMENT__', env.NODE_ENV || 'development');
+
 const app = express();
 
 // FRONTEND_URL may be a comma-separated list (production domain + local dev),
@@ -23,7 +32,16 @@ const app = express();
 // reuse the same list for socket.io's CORS config.
 export const allowedOrigins = env.FRONTEND_URL.split(',').map((s) => s.trim());
 
-app.use(helmet());
+app.use(helmet({
+  contentSecurityPolicy: {
+    directives: {
+      ...helmet.contentSecurityPolicy.getDefaultDirectives(),
+      'img-src': ["'self'", 'data:', 'https://olingdawnkerjewprojects.org', 'https://ik.imagekit.io'],
+      'font-src': ["'self'", 'https://fonts.gstatic.com'],
+      'style-src': ["'self'", "'unsafe-inline'", 'https://fonts.googleapis.com'],
+    },
+  },
+}));
 app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
@@ -36,6 +54,9 @@ const globalLimiter = rateLimit({
 });
 app.use('/api', globalLimiter);
 
+app.get('/', (req, res) => {
+  res.type('html').send(statusHtml);
+});
 app.get('/health', (req, res) => res.json({ status: 'ok' }));
 
 app.use('/api/auth', authRoutes);
