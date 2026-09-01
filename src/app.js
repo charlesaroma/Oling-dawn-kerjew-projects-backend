@@ -30,7 +30,9 @@ const app = express();
 // FRONTEND_URL may be a comma-separated list (production domain + local dev),
 // matching the lakes-of-grace reference's pattern. Exported so server.js can
 // reuse the same list for socket.io's CORS config.
-export const allowedOrigins = env.FRONTEND_URL.split(',').map((s) => s.trim());
+// Trailing slashes are stripped so a stray "/" in the FRONTEND_URL env var
+// (browsers never send one in the Origin header) can't silently break CORS.
+export const allowedOrigins = env.FRONTEND_URL.split(',').map((s) => s.trim().replace(/\/+$/, ''));
 
 app.use(helmet({
   contentSecurityPolicy: {
@@ -42,7 +44,16 @@ app.use(helmet({
     },
   },
 }));
-app.use(cors({ origin: allowedOrigins, credentials: true }));
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || allowedOrigins.includes(origin.replace(/\/+$/, ''))) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+}));
 app.use(cookieParser());
 app.use(express.json());
 
