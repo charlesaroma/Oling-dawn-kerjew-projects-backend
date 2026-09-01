@@ -106,6 +106,7 @@ export const createMedia = async (req, res) => {
   });
 
   const result = uploaded.length === 1 ? uploaded[0] : uploaded;
+  req.app.get('io')?.emit('media:created', result);
 
   if (oversized.length > 0) {
     return res.status(207).json({ uploaded: result, errors: oversized });
@@ -139,6 +140,7 @@ export const recordMedia = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('media:created', item);
   res.status(201).json(item);
 };
 
@@ -155,6 +157,7 @@ export const updateMedia = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('media:updated', item);
   res.json(item);
 };
 
@@ -181,5 +184,6 @@ export const deleteMedia = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('media:deleted', { id: req.params.id });
   res.json({ message: 'Media deleted' });
 };

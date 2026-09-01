@@ -18,8 +18,13 @@ import auditLogRoutes from './core/audit/auditLog.routes.js';
 
 const app = express();
 
+// FRONTEND_URL may be a comma-separated list (production domain + local dev),
+// matching the lakes-of-grace reference's pattern. Exported so server.js can
+// reuse the same list for socket.io's CORS config.
+export const allowedOrigins = env.FRONTEND_URL.split(',').map((s) => s.trim());
+
 app.use(helmet());
-app.use(cors({ origin: env.FRONTEND_URL, credentials: true }));
+app.use(cors({ origin: allowedOrigins, credentials: true }));
 app.use(cookieParser());
 app.use(express.json());
 

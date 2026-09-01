@@ -27,6 +27,7 @@ export const createImageCategory = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('imageCategories:created', category);
   res.status(201).json(category);
 };
 
@@ -43,6 +44,7 @@ export const updateImageCategory = async (req, res) => {
 
   if (result.data.name && result.data.name !== existing.name) {
     await prisma.media.updateMany({ where: { tag: existing.name }, data: { tag: category.name } });
+    req.app.get('io')?.emit('media:categoryRenamed', { from: existing.name, to: category.name });
   }
 
   await writeAuditLog({
@@ -54,6 +56,7 @@ export const updateImageCategory = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('imageCategories:updated', category);
   res.json(category);
 };
 
@@ -69,6 +72,7 @@ export const deleteImageCategory = async (req, res) => {
     req,
   });
 
+  req.app.get('io')?.emit('imageCategories:deleted', { id: req.params.id });
   res.json({ message: 'Category deleted' });
 };
 
@@ -83,5 +87,6 @@ export const reorderImageCategories = async (req, res) => {
   );
 
   const categories = await prisma.imageCategory.findMany({ orderBy: { sortOrder: 'asc' } });
+  req.app.get('io')?.emit('imageCategories:reordered', categories);
   res.json(categories);
 };
