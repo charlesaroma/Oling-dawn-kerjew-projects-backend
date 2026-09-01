@@ -55,6 +55,18 @@ app.use(cors({
   credentials: true,
 }));
 app.use(cookieParser());
+
+// The ImageKit webhook needs the raw request body to verify its HMAC
+// signature — this carve-out must be registered before the global JSON
+// parser below, or req.body arrives already parsed and verification breaks.
+app.use('/api/media/webhook', (req, res, next) => {
+  if (req.method === 'POST') {
+    express.raw({ type: 'application/json' })(req, res, next);
+  } else {
+    next();
+  }
+});
+
 app.use(express.json());
 
 const globalLimiter = rateLimit({

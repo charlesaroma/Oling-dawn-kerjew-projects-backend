@@ -12,6 +12,10 @@ const envSchema = z.object({
   IMAGEKIT_PUBLIC_KEY: z.string().min(1, 'IMAGEKIT_PUBLIC_KEY is required'),
   IMAGEKIT_PRIVATE_KEY: z.string().min(1, 'IMAGEKIT_PRIVATE_KEY is required'),
   IMAGEKIT_URL_ENDPOINT: z.string().url('IMAGEKIT_URL_ENDPOINT must be a valid URL'),
+  // Optional — only needed where ImageKit can actually reach this server to
+  // deliver a webhook (i.e. the deployed backend, not local dev). Unset in
+  // an environment, the webhook route just safely rejects every call.
+  IMAGEKIT_WEBHOOK_SECRET: z.string().optional(),
 });
 
 const parsed = envSchema.safeParse(process.env);
