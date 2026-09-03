@@ -9,7 +9,8 @@
     "build": "prisma generate",
     "start": "node src/server.js",
     "dev": "nodemon src/server.js",
-    "seed": "node prisma/seed.js"
+    "seed": "node prisma/seed.js",
+    "seed:account": "node prisma/seed-account.js"
   },
   "keywords": [],
   "author": "",
