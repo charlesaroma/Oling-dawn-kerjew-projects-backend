@@ -147,6 +147,27 @@ const NEW_PHOTOS = {
   ],
 };
 
+/*
+  Explicit exception to the "real photos only" rule above: these 5 concept
+  projects are abstract policy/systems proposals (a social security fund, an
+  electoral-sensitisation campaign, a legal-aid casework programme, a
+  cookstove/reforestation programme, an information-management platform) with
+  no corresponding field photo anywhere in ODKHC's library — checked against
+  every photo uploaded this batch plus the existing media library. Used here
+  only on explicit request (2026-09-15) to replace the icon-only placeholder.
+  All from Pexels (https://www.pexels.com/license/ — free for commercial use,
+  no attribution required), chosen for a plain, non-editorial documentary
+  look consistent with the rest of the site rather than a "stock photo" feel.
+  Swap for a real ODKHC photo the moment one exists.
+*/
+const STOCK_PHOTOS = {
+  ballotBox: 'https://images.pexels.com/photos/7103169/pexels-photo-7103169.jpeg?auto=compress&cs=tinysrgb&w=1600',
+  savingsSecurity: 'https://images.pexels.com/photos/3943727/pexels-photo-3943727.jpeg?auto=compress&cs=tinysrgb&w=1600',
+  serverRoom: 'https://images.pexels.com/photos/5480781/pexels-photo-5480781.jpeg?auto=compress&cs=tinysrgb&w=1600',
+  legalConsultation: 'https://images.pexels.com/photos/8111895/pexels-photo-8111895.jpeg?auto=compress&cs=tinysrgb&w=1600',
+  solarCooker: 'https://images.pexels.com/photos/31686958/pexels-photo-31686958.jpeg?auto=compress&cs=tinysrgb&w=1600',
+};
+
 const PROJECTS = [
   /*
     The low-cost construction programme. ODKHC's own briefing lists its
@@ -405,6 +426,7 @@ const PROJECTS = [
       'Aligned with SDG 1 (No Poverty), SDG 3 (Good Health & Well-being) and SDG 8 (Decent Work & Economic Growth).',
       'This programme is at concept stage, submitted to the Robert Schuman Foundation and Trust, and is seeking donor partnership to move to implementation.',
     ],
+    coverImage: STOCK_PHOTOS.savingsSecurity,
     gallery: [],
     publishStatus: 'published',
   },
@@ -506,6 +528,7 @@ const PROJECTS = [
       'Aligned with SDG 16 (Peace, Justice & Strong Institutions).',
       'This programme is at concept stage, submitted to the Robert Schuman Foundation and Trust, and is seeking donor partnership to move to implementation.',
     ],
+    coverImage: STOCK_PHOTOS.ballotBox,
     gallery: [],
     publishStatus: 'published',
   },
@@ -624,6 +647,7 @@ const PROJECTS = [
       'Aligned with SDG 16 (Peace, Justice & Strong Institutions) and SDG 5 (Gender Equality).',
       'This programme is at concept stage, submitted to the Robert Schuman Foundation and Trust, and is seeking donor partnership to move to implementation.',
     ],
+    coverImage: STOCK_PHOTOS.legalConsultation,
     gallery: [],
     publishStatus: 'published',
   },
@@ -674,6 +698,7 @@ const PROJECTS = [
       'Aligned with SDG 7 (Affordable & Clean Energy), SDG 13 (Climate Action) and SDG 15 (Life on Land).',
       'This programme is at concept stage, submitted to the Robert Schuman Foundation and Trust, and is seeking donor partnership to move to implementation.',
     ],
+    coverImage: STOCK_PHOTOS.solarCooker,
     gallery: [],
     publishStatus: 'published',
   },
@@ -724,6 +749,7 @@ const PROJECTS = [
       'Aligned with SDG 16 (Peace, Justice & Strong Institutions) and SDG 17 (Partnerships for the Goals).',
       'This programme is at concept stage, submitted to the Robert Schuman Foundation and Trust, and is seeking donor partnership to move to implementation.',
     ],
+    coverImage: STOCK_PHOTOS.serverRoom,
     gallery: [],
     publishStatus: 'published',
   },
