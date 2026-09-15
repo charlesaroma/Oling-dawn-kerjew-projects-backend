@@ -73,6 +73,72 @@ async function seedSiteConfig() {
 const IK = 'https://ik.imagekit.io/u8h0uidte';
 // Construction imagery is served from the site's own public folder, not ImageKit.
 const IK_BUILD = `${IK}/oling-dawn-kerjew-projects/construction`;
+// Full-resolution client photo drop (Sept 2026), one real folder per
+// project — uploaded to ImageKit under /media and tagged to match. Replaces
+// the handful of general-purpose shots (agricultural tools, NGO school,
+// scholastic materials, hairdressing) that were being reused across nearly
+// every project for lack of anything more specific.
+const IK_MEDIA = `${IK}/oling-dawn-kerjew-projects/media`;
+const NEW_PHOTOS = {
+  afghanRefugees: [
+    `${IK_MEDIA}/afghan-refugees-1_5qZo2FfAg.jpeg`,
+    `${IK_MEDIA}/afghan-refugees-2_j83OtHvtW9.jpeg`,
+    `${IK_MEDIA}/afghan-refugees-3_TW37k1tXWq.jpeg`,
+    `${IK_MEDIA}/afghan-refugees-4_eRS5JCmOr.jpeg`,
+    `${IK_MEDIA}/afghan-refugees-5_Wa9TwS2tCX.jpeg`,
+    `${IK_MEDIA}/afghan-refugees-6_cVg1pvNN2d.jpeg`,
+  ],
+  arovaSchool: [
+    `${IK_MEDIA}/arova-school-1_NnNJwIafa.jpg`,
+    `${IK_MEDIA}/arova-school-2_bKLuPrxiV.jpg`,
+    `${IK_MEDIA}/arova-school-3_E4NtjKzdn.jpg`,
+    `${IK_MEDIA}/arova-school-4_f5dregfkn.jpg`,
+    `${IK_MEDIA}/arova-school-5_3xEb6v6jee.jpg`,
+    `${IK_MEDIA}/arova-school-6_0c8b3j32o6.jpg`,
+  ],
+  // 1-3 are the mill/factory interior, 4-6 the hair salon — one trip covered both.
+  factorySalon: [
+    `${IK_MEDIA}/factory-salon-1_OPdDVSbtZ.jpg`,
+    `${IK_MEDIA}/factory-salon-2_dcwO4oXdH.jpg`,
+    `${IK_MEDIA}/factory-salon-3_Wlslznsgp.jpg`,
+    `${IK_MEDIA}/factory-salon-4_ciYiw4DhI.jpg`,
+    `${IK_MEDIA}/factory-salon-5_TU320TxnCX.jpg`,
+    `${IK_MEDIA}/factory-salon-6_HFR1JgorB.jpg`,
+  ],
+  grindingMill: [
+    `${IK_MEDIA}/grinding-mill-1_i7WvdvrPR.jpg`,
+    `${IK_MEDIA}/grinding-mill-2_d1opFesJ9.jpg`,
+    `${IK_MEDIA}/grinding-mill-3_j7sfnhK0ib.jpg`,
+    `${IK_MEDIA}/grinding-mill-4_UvVBZbLgG.jpg`,
+    `${IK_MEDIA}/grinding-mill-5_CnqqnVmiU.jpg`,
+    `${IK_MEDIA}/grinding-mill-6_V5gDppu7w.jpg`,
+  ],
+  hoes: [
+    `${IK_MEDIA}/hoes-1_r5oKc6-Ib.JPG`,
+    `${IK_MEDIA}/hoes-2_LQR_akFsM.JPG`,
+    `${IK_MEDIA}/hoes-3_ePN0TrNh_.JPG`,
+    `${IK_MEDIA}/hoes-4_gxuRAw4wc.JPG`,
+    `${IK_MEDIA}/hoes-5_8X99yQQ_G.JPG`,
+    `${IK_MEDIA}/hoes-6_485KK_WJD.JPG`,
+  ],
+  saloon: [
+    `${IK_MEDIA}/saloon-1_SQrBT3Ym_.jpg`,
+    `${IK_MEDIA}/saloon-2_6pIuESn-3z.jpg`,
+    `${IK_MEDIA}/saloon-3_dxke8s3-C1.jpg`,
+    `${IK_MEDIA}/saloon-4_G9IUIbZ5RA.jpg`,
+    `${IK_MEDIA}/saloon-5_bnhBEI-xG.jpg`,
+  ],
+  sudaneseRefugees: [
+    `${IK_MEDIA}/sudanese-refugees-1_hKWDOf06T.jpeg`,
+    `${IK_MEDIA}/sudanese-refugees-2_D_ftO6ZdI.jpeg`,
+    `${IK_MEDIA}/sudanese-refugees-3_M-95daAn8.jpeg`,
+    `${IK_MEDIA}/sudanese-refugees-4_oln1IloK2.jpeg`,
+    `${IK_MEDIA}/sudanese-refugees-5_9cxTSl1c3.jpeg`,
+    `${IK_MEDIA}/sudanese-refugees-6_CODg11hHI.jpeg`,
+  ],
+  // Mosque in Lira — uploaded and tagged (media library, tag "mosque-lira"),
+  // not yet wired to a specific project pending confirmation of which one it belongs to.
+};
 
 const PROJECTS = [
   /*
@@ -163,11 +229,8 @@ const PROJECTS = [
       'Oling Dawn Kerjew distributed hoes and farming materials to smallholder farmers and community women in Anywalonino village, Lira.',
       'Hand tools remain the limiting factor for many households farming on small plots. Putting them directly into the hands of the women who work the land raises what a family can plant and harvest in a single season.',
     ],
-    coverImage: `${IK}/Oling-Dawn-Kerjew-/distributing_agricultural_tools_hoes_MG_7659.JPG`,
-    gallery: [
-      `${IK}/Oling-Dawn-Kerjew-/_MG_7666.JPG`,
-      `${IK}/Oling-Dawn-Kerjew-/_MG_7686.JPG`,
-    ],
+    coverImage: NEW_PHOTOS.hoes[3],
+    gallery: [NEW_PHOTOS.hoes[0], NEW_PHOTOS.hoes[1], NEW_PHOTOS.hoes[2], NEW_PHOTOS.hoes[4], NEW_PHOTOS.hoes[5]],
     publishStatus: 'published',
   },
   {
@@ -182,8 +245,8 @@ const PROJECTS = [
       'Oling Dawn Kerjew ran a hairdressing and design skills training programme for women and girls in Anywalonino village, at the Odokomit Trading Centre in Lira.',
       'The training is built around a trade that can be practised locally with modest equipment, so participants can begin earning in their own community rather than having to migrate for work.',
     ],
-    coverImage: `${IK}/Oling-Dawn-Kerjew-/ladies_hairdressing_training_20250812_123723.jpg`,
-    gallery: [],
+    coverImage: NEW_PHOTOS.saloon[4],
+    gallery: [NEW_PHOTOS.saloon[0], NEW_PHOTOS.saloon[1], NEW_PHOTOS.saloon[2], NEW_PHOTOS.saloon[3], NEW_PHOTOS.factorySalon[3], NEW_PHOTOS.factorySalon[4], NEW_PHOTOS.factorySalon[5]],
     publishStatus: 'published',
   },
   {
@@ -199,8 +262,8 @@ const PROJECTS = [
       'Oling Dawn Kerjew established a 50-horsepower grinding and hauling mill at Myene so the community can mill at low cost, close to home. The income generated covers electricity, maintenance and the salaries of the workers who run it.',
       'The mill also operates as a small and medium enterprise in its own right, milling and hauling produce for the surrounding sub-county.',
     ],
-    coverImage: `${IK}/oling-dawn-kerjew-projects/media/20250802_091710_akIjulqSV.jpg`,
-    gallery: [],
+    coverImage: NEW_PHOTOS.grindingMill[2],
+    gallery: [NEW_PHOTOS.grindingMill[0], NEW_PHOTOS.grindingMill[1], NEW_PHOTOS.grindingMill[3], NEW_PHOTOS.grindingMill[4], NEW_PHOTOS.grindingMill[5]],
     publishStatus: 'published',
   },
   {
@@ -216,8 +279,8 @@ const PROJECTS = [
       'During the visit the team listened directly to students and staff about the challenges they face, including damaged roofing, inadequate toilets and a school pickup truck that is currently broken down.',
       'These conversations are shaping how future support for the school is planned.',
     ],
-    coverImage: `${IK}/Oling-Dawn-Kerjew-/distributing_scholarstic_materials_to_under_priviledged_students_20250811_121004.jpg`,
-    gallery: [`${IK}/Oling-Dawn-Kerjew-/NGO_secondary_school_20250811_120553.jpg`],
+    coverImage: NEW_PHOTOS.arovaSchool[5],
+    gallery: [NEW_PHOTOS.arovaSchool[1], NEW_PHOTOS.arovaSchool[2], NEW_PHOTOS.arovaSchool[4], NEW_PHOTOS.arovaSchool[0], NEW_PHOTOS.arovaSchool[3]],
     publishStatus: 'published',
   },
   {
@@ -233,8 +296,9 @@ const PROJECTS = [
       'Oling Dawn Kerjew met with Afghan refugee community leaders in Old Kampala to discuss a memorandum of understanding covering support and peace-building work.',
       'As a minority community with limited access to funding, their livelihoods remain at risk, and the initiative is focused on understanding and responding to their most pressing needs.',
     ],
-    gallery: [],
-    publishStatus: 'draft',
+    coverImage: NEW_PHOTOS.afghanRefugees[4],
+    gallery: [NEW_PHOTOS.afghanRefugees[0], NEW_PHOTOS.afghanRefugees[1], NEW_PHOTOS.afghanRefugees[2], NEW_PHOTOS.afghanRefugees[3], NEW_PHOTOS.afghanRefugees[5]],
+    publishStatus: 'published',
   },
   {
     slug: 'sudanese-refugee-food-aid',
@@ -248,8 +312,9 @@ const PROJECTS = [
       'Working alongside partner organisation MAMA AFRICA, Oling Dawn Kerjew helped distribute food aid, including bread, to Sudanese refugees living in a camp in Kiryandongo District, Bweyale Town.',
       'The distribution reached families who fled conflict and are now rebuilding their lives far from home, providing immediate relief to households facing food insecurity.',
     ],
-    gallery: [],
-    publishStatus: 'draft',
+    coverImage: NEW_PHOTOS.sudaneseRefugees[1],
+    gallery: [NEW_PHOTOS.sudaneseRefugees[0], NEW_PHOTOS.sudaneseRefugees[2], NEW_PHOTOS.sudaneseRefugees[3], NEW_PHOTOS.sudaneseRefugees[4], NEW_PHOTOS.sudaneseRefugees[5]],
+    publishStatus: 'published',
   },
   {
     slug: 'digital-marketplace-partnership',
