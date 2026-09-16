@@ -1,15 +1,17 @@
 import prisma from '../../lib/prisma.js';
 
 export const getAuditLogs = async (req, res) => {
-  const { entityType, entityId } = req.query;
+  const { entityType, entityId, severity } = req.query;
   const where = {};
   if (entityType) where.entityType = entityType;
   if (entityId) where.entityId = entityId;
+  if (severity) where.severity = severity;
 
   const logs = await prisma.auditLog.findMany({
     where,
     orderBy: { createdAt: 'desc' },
-    take: 100,
+    take: 200,
+    include: { actor: { select: { name: true, email: true } } },
   });
   res.json(logs);
 };
